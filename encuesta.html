@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+title>¿Cómo se reparte la plata? — Tu opinión</title>
+<style>
+/* ============= THEME & RESET ============= */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0f1f;--bg-deep:#060a16;--card:#111a2e;--card-hover:#15203a;
+  --border:#1e2d4a;--border-bright:#2a3f6e;--text:#f0f4fb;--muted:#7b8fa8;
+  --accent:#00e5ff;--accent2:#7c4dff;--accent3:#ff2d75;--gold:#ffd600;
+  --ok:#00e676;--warn:#ffb300;--danger:#ff4d6a;
+  --radius:18px;--shadow:0 20px 60px rgba(0,0,0,.5);
+  --shadow-glow:0 0 40px rgba(0,229,255,.25);
+  --font:'Space Grotesk',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+@media(prefers-color-scheme:light){
+  :root{--bg:#f5f7fb;--bg-deep:#eef1f8;--card:#fff;--card-hover:#f8fafc;--border:#dfe4ee;--border-bright:#cdd6e8;--text:#1a1f2e;--muted:#5a6a85;--shadow:0 20px 60px rgba(20,30,60,.12);--shadow-glow:0 0 40px rgba(124,77,255,.25);}
+}
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden;position:relative}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 80% 50% at 20% 10%,rgba(0,229,255,.08),transparent),radial-gradient(ellipse 60% 40% at 80% 90%,rgba(124,77,255,.08),transparent),radial-gradient(ellipse 40% 30% at 50% 50%,rgba(255,45,117,.04),transparent),var(--bg-deep);pointer-events:none}
+#particles{position:fixed;inset:0;z-index:-1;pointer-events:none}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.container{width:100%;max-width:900px;margin:0 auto;padding:1.5rem 1rem;min-height:100vh;display:flex;flex-direction:column}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1.6rem;border-radius:12px;font-weight:600;font-size:.95rem;border:none;cursor:pointer;transition:all .25s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-100%);transition:transform .3s ease}
+.btn:hover:not(:disabled)::before{transform:translateX(100%)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg);box-shadow:0 6px 24px rgba(0,229,255,.3)}
+.btn-primary:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,229,255,.45)}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover:not(:disabled){border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid transparent}
+.btn-ghost:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#ffb300);color:var(--bg);box-shadow:0 6px 24px rgba(255,214,0,.3)}
+.btn-gold:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 12px 32px rgba(255,214,0,.45)}
+
+/* ============= ANIMATIONS ============= */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(0,229,255,.2)}50%{box-shadow:0 0 40px rgba(0,229,255,.5),0 0 60px rgba(124,77,255,.3)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.animate-in{animation:fadeUp .7s cubic-bezier(.22,1,.36,1) forwards;opacity:0}
+.delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}.delay-4{animation-delay:.4s}.delay-5{animation-delay:.5s}.delay-6{animation-delay:.6s}
+
+header{text-align:center;padding:2rem 1rem 1rem;position:relative}
+header h1{font-size:clamp(1.6rem,5vw,2.5rem);font-weight:700;letter-spacing:-.03em;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:.5rem;background-size:200% 200%;animation:shimmer 3s ease-in-out infinite}
+.subtitle{color:var(--muted);font-size:1rem;font-weight:400}
+.badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(17,26,46,.8);border:1px solid var(--border);backdrop-filter:blur(10px);padding:.5rem 1rem;border-radius:999px;font-size:.8rem;margin-top:1rem;color:var(--muted)}
+.badge strong{color:var(--accent);font-size:1.1rem;font-variant-numeric:tabular-nums}
+.badge svg{width:18px;height:18px;color:var(--accent);animation:pulseGlow 2s ease-in-out infinite}
+
+main{flex:1;display:flex;flex-direction:column;position:relative;z-index:1}
+.screen{display:none;animation:fadeIn .4s ease}
+.screen.active{display:block}
+.screen.enter{animation:fadeUp .6s cubic-bezier(.22,1,.36,1)}
+
+/* ============= NAME MODAL ============= */
+#nameModal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(6,10,22,.95);backdrop-filter:blur(8px);padding:1rem;animation:fadeIn .4s ease}
+.name-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2.5rem 2rem;max-width:420px;width:100%;text-align:center;box-shadow:var(--shadow),var(--shadow-glow);animation:scaleIn .5s cubic-bezier(.22,1,.36,1)}
+.name-box h2{font-size:1.5rem;font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.name-box p{color:var(--muted);margin-bottom:1.5rem;font-size:.95rem}
+.name-box input{width:100%;padding:1rem 1.25rem;border-radius:12px;background:var(--bg);border:2px solid var(--border);color:var(--text);font-family:inherit;font-size:1rem;outline:none;transition:border .2s,box-shadow .2s}
+.name-box input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(0,229,255,.15)}
+.name-box input::placeholder{color:var(--muted)}
+.name-error{color:var(--danger);font-size:.8rem;margin-top:.5rem;min-height:1.2em;display:none}
+.name-error.show{display:block;animation:fadeIn .2s}
+
+/* ============= LOBBY ============= */
+.lobby{text-align:center;padding:2rem 1rem;flex:1;display:flex;flex-direction:column;justify-content:center}
+.lobby-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:2rem;max-width:680px;margin-left:auto;margin-right:auto}
+.lobby-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2.5rem 1.5rem;cursor:pointer;transition:all .35s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;text-align:center}
+.lobby-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transition:opacity .4s;z-index:0}
+.lobby-card:hover{border-color:var(--accent);transform:translateY(-8px);box-shadow:var(--shadow),var(--shadow-glow)}
+.lobby-card:hover::before{opacity:.08}
+.lobby-card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.lobby-card>*{position:relative;z-index:1}
+.lobby-icon{width:64px;height:64px;margin:0 auto 1.25rem;color:var(--accent);filter:drop-shadow(0 0 16px rgba(0,229,255,.4));animation:float 3s ease-in-out infinite}
+.lobby-card:nth-child(2) .lobby-icon{color:var(--accent2);filter:drop-shadow(0 0 16px rgba(124,77,255,.4));animation-delay:-.5s}
+.lobby-card h3{font-size:1.15rem;font-weight:700;margin-bottom:.5rem}
+.lobby-card p{font-size:.9rem;color:var(--muted);line-height:1.5}
+.lobby-card .arrow{margin-top:auto;display:inline-flex;width:36px;height:36px;border-radius:50%;background:rgba(0,229,255,.15);color:var(--accent);align-items:center;justify-content:center;transition:all .3s}
+.lobby-card:hover .arrow{background:var(--accent);color:var(--bg);transform:translateX(4px)}
+
+.progress-wrap{margin-bottom:1.5rem}
+.progress-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;position:relative}
+.progress-bar::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);animation:shimmer 2s infinite}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));background-size:200% 100%;animation:shimmer 2s linear infinite;transform-origin:left;transform:scaleX(0);transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.progress-text{text-align:center;font-size:.85rem;color:var(--muted);margin-top:.5rem;font-variant-numeric:tabular-nums}
+
+.question-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));background-size:200% 100%;animation:shimmer 2s linear infinite}
+.q-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.q-num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;background:rgba(0,229,255,.12);padding:.25rem .7rem;border-radius:999px;white-space:nowrap}
+.q-text{font-size:1.1rem;font-weight:600;line-height:1.4;flex:1;min-width:180px}
+.options{display:flex;flex-direction:column;gap:.65rem}
+.option{position:relative}
+.option input{position:absolute;opacity:0;pointer-events:none}
+.option label{display:flex;align-items:center;gap:.85rem;padding:1rem 1.1rem;background:var(--bg);border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all .25s cubic-bezier(.22,1,.36,1);font-size:.95rem;position:relative;overflow:hidden}
+.option label::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2));transform:scaleY(0);transform-origin:top;transition:transform .3s ease}
+.option:hover label{border-color:var(--accent);background:rgba(0,229,255,.06)}
+.option:hover label::before{transform:scaleY(1)}
+.option input:checked+label{border-color:var(--accent);background:rgba(0,229,255,.1);box-shadow:0 0 0 4px rgba(0,229,255,.15)}
+.option input:checked+label::before{transform:scaleY(1)}
+.opt-letter{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--muted);font-weight:700;font-size:.85rem;flex-shrink:0;transition:all .25s ease}
+.option input:checked+label .opt-letter{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg);transform:scale(1.1)}
+.opt-text{flex:1}
+
+.argument-box{margin-top:1.25rem;padding:1.25rem;background:rgba(17,26,46,.6);border:1px solid var(--border);border-radius:12px;display:none;animation:slideRight .35s ease}
+.argument-box.visible{display:block}
+.arg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.arg-label{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:.5rem}
+.arg-optional{font-size:.65rem;color:var(--accent2);background:rgba(124,77,255,.15);padding:.1rem .5rem;border-radius:999px;font-weight:500}
+.arg-counter{font-variant-numeric:tabular-nums;color:var(--accent);font-size:.8rem;font-weight:600}
+.arg-counter.warn{color:var(--warn)}.arg-counter.danger{color:var(--danger)}
+.argument-box textarea{width:100%;min-height:90px;max-height:180px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:.85rem;font-family:inherit;font-size:.9rem;color:var(--text);resize:vertical;outline:none;transition:border .2s,box-shadow .2s}
+.argument-box textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(0,229,255,.15)}
+.argument-box textarea::placeholder{color:var(--muted)}
+
+.comments-section{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:none;animation:fadeIn .4s ease}
+.comments-section.visible{display:block}
+.comments-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.comments-title{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.vote-count{font-size:.7rem;padding:.2rem .6rem;border-radius:999px;background:rgba(0,229,255,.15);color:var(--accent);font-weight:700}
+.comment-form{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem}
+.comment-form textarea{width:100%;min-height:70px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:.75rem;font-family:inherit;font-size:.85rem;color:var(--text);resize:vertical;outline:none;transition:border .2s,box-shadow .2s}
+.comment-form textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(0,229,255,.15)}
+.comment-form .btn{align-self:flex-start}
+.comments-list{display:flex;flex-direction:column;gap:.7rem;max-height:340px;overflow-y:auto;padding-right:.3rem}
+.comments-list::-webkit-scrollbar{width:6px}
+.comments-list::-webkit-scrollbar-track{background:var(--bg);border-radius:3px}
+.comments-list::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:3px}
+.comment{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;transition:all .2s;animation:fadeUp .4s ease backwards}
+.comment:hover{border-color:var(--border-bright);transform:translateX(4px)}
+.comment-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem;flex-wrap:wrap}
+.comment-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:var(--bg);flex-shrink:0}
+.comment-meta{display:flex;flex-direction:column}
+.comment-author{font-size:.8rem;font-weight:600}
+.comment-time{font-size:.65rem;color:var(--muted)}
+.comment-badge{margin-left:auto;font-size:.6rem;padding:.15rem .5rem;border-radius:999px;background:rgba(0,229,255,.15);color:var(--accent);font-weight:700;white-space:nowrap}
+.comment-body{font-size:.85rem;line-height:1.55;color:var(--text)}
+.comment-arg{margin-top:.5rem;padding:.5rem .7rem;background:rgba(124,77,255,.08);border:1px solid rgba(124,77,255,.2);border-radius:8px;font-size:.75rem;font-style:italic;color:var(--accent2)}
+.comment-replies{margin-top:.5rem;padding-left:1rem;border-left:2px solid var(--border);display:flex;flex-direction:column;gap:.35rem}
+.reply{background:rgba(0,229,255,.03);border:1px solid var(--border);border-radius:10px;padding:.6rem .8rem;font-size:.78rem;animation:fadeIn .3s ease}
+.reply-head{display:flex;gap:.5rem;margin-bottom:.2rem}
+.reply-avatar{width:24px;height:24px;border-radius:50%;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.6rem;color:#fff}
+.reply-meta{display:flex;flex-direction:column}
+.reply-author{font-size:.65rem;font-weight:600}
+.reply-time{font-size:.55rem;color:var(--muted)}
+.reply-body{color:var(--text)}
+.reply-btn{margin-top:.5rem;padding:.3rem .7rem;font-size:.65rem;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:999px;cursor:pointer;transition:all .2s}
+.reply-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.nav{display:flex;justify-content:space-between;gap:1rem;margin-top:1.5rem}
+.nav-center{display:flex;gap:.6rem;justify-content:center;flex:1}
+
+.comments-view-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem}
+.comments-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}
+.comment-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;transition:all .3s;animation:fadeUp .5s ease backwards}
+.comment-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:var(--shadow)}
+.comment-card .q-num{margin-bottom:.5rem}
+.comment-card .q-text{font-size:.9rem;margin-bottom:.75rem}
+.comment-card .comments-list{max-height:300px}
+
+.final-screen{text-align:center;padding:2rem 1rem;flex:1;display:flex;flex-direction:column;justify-content:center}
+.final-icon{width:96px;height:96px;margin:0 auto 1.5rem;color:var(--accent);filter:drop-shadow(0 0 30px rgba(0,229,255,.4));animation:float 3s ease-in-out infinite,pulseGlow 2s ease-in-out infinite}
+.final-title{font-size:clamp(1.5rem,4vw,2rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.thanks-text{font-size:1rem;color:var(--accent);font-weight:500;margin-bottom:1rem}
+.final-sub{color:var(--muted);margin-bottom:2rem;max-width:400px;margin-left:auto;margin-right:auto;font-size:.95rem}
+.final-stats{display:flex;justify-content:center;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 2rem;min-width:150px;transition:all .3s}
+.stat:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:var(--shadow-glow)}
+.stat-value{font-size:2rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1}
+.stat-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem}
+.share-row{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0}
+.quote-box{margin-top:auto;padding:2rem;background:linear-gradient(135deg,rgba(0,229,255,.06),rgba(124,77,255,.06));border:1px solid var(--border-bright);border-radius:var(--radius);position:relative;overflow:hidden}
+.quote-box::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));background-size:200% 100%;animation:shimmer 2s linear infinite}
+.quote-text{font-size:1.1rem;line-height:1.7;font-style:italic;color:var(--text);margin-bottom:1rem;position:relative;z-index:1}
+.quote-author{font-size:.85rem;color:var(--muted);font-style:normal;position:relative;z-index:1}
+.quote-author strong{color:var(--accent);font-weight:600}
+.quote-note{font-size:.75rem;color:var(--muted);margin-top:.5rem;display:block}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:2000;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.3rem;box-shadow:var(--shadow),var(--shadow-glow);display:flex;align-items:center;gap:.6rem;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.22,1,.36,1)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{border-color:var(--ok)}.toast.err{border-color:var(--danger)}
+.toast svg{width:22px;height:22px;flex-shrink:0}
+.toast.ok svg{color:var(--ok)}.toast.err svg{color:var(--danger)}
+
+@media(max-width:560px){.q-header{flex-direction:column;align-items:flex-start}.comment-badge{margin-left:0;margin-top:.2rem}.nav{flex-direction:column}.nav-center{width:100%}.nav-center .btn{flex:1}.stat{padding:1rem 1.5rem;min-width:120px}.stat-value{font-size:1.5rem}.name-box{padding:1.5rem}.lobby-card{padding:1.5rem 1rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.progress-fill{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="particles" aria-hidden="true"></canvas>
+<div class="container">
+  <header class="animate-in">
+    <h1>¿Cómo se reparte la plata?</h1>
+    <p class="subtitle animate-in delay-1">7 situaciones para opinar • Explicá tu voto si querés • Leé y respondé a otros</p>
+    <div class="badge animate-in delay-2" aria-live="polite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Participantes: <strong id="globalCount">85</strong></span></div>
+  </header>
+
+  <main>
+    <div id="nameModal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
+      <div class="name-box">
+        <h2 id="nameModalTitle">¿Cómo querés que te llamen?</h2>
+        <p>Este nombre va a salir en tus comentarios y argumentos.</p>
+        <input type="text" id="userNameInput" maxlength="20" placeholder="Tu nombre o apodo" autocomplete="off" spellcheck="false">
+        <div class="name-error" id="nameError" aria-live="polite"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:1rem" id="nameSubmitBtn">Entrar</button>
+      </div>
+    </div>
+
+    <section class="screen active" id="screenLobby" aria-label="Inicio">
+      <div class="lobby">
+        <div class="animate-in" style="margin-bottom:1.5rem"><p style="color:var(--muted);font-size:.95rem">Elegí qué querés hacer</p></div>
+        <div class="lobby-cards">
+          <article class="lobby-card animate-in delay-1" onclick="showScreen('screenSurvey')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')showScreen('screenSurvey')" aria-label="Hacer la encuesta">
+            <svg class="lobby-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <h3>Hacer la encuesta</h3>
+            <p>Respondé 7 situaciones, explicá tu voto (si querés) y mirá qué piensa el resto</p>
+            <div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </article>
+          <article class="lobby-card animate-in delay-2" onclick="showScreen('screenComments')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')showScreen('screenComments')" aria-label="Ver comentarios">
+            <svg class="lobby-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <h3>Ver comentarios</h3>
+            <p>Leé y respondé los debates de cada situación sin tener que votar</p>
+            <div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screenSurvey" aria-label="Encuesta">
+      <div class="progress-wrap"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" id="progressFill"></div></div><p class="progress-text" id="progressText">Situación 1 de 7</p></div>
+      <form id="surveyForm" novalidate></form>
+      <div class="nav"><button type="button" class="btn btn-secondary" id="prevBtn" disabled>← Anterior</button><div class="nav-center"><button type="button" class="btn btn-primary" id="nextBtn">Siguiente →</button></div></div>
+    </section>
+
+    <section class="screen" id="screenComments" aria-label="Ver comentarios">
+      <div class="comments-view-header"><button class="btn btn-ghost" onclick="showScreen('screenLobby')">← Volver al inicio</button><h2 style="font-size:1.2rem;font-weight:700">Comentarios por situación</h2></div>
+      <div class="comments-grid" id="commentsView"></div>
+    </section>
+
+    <section class="screen final-screen" id="screenFinal" aria-label="Resultados finales">
+      <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+      <h2 class="final-title">¡Encuesta completada!</h2>
+      <p class="thanks-text">¡Gracias por participar! Tu opinión suma.</p>
+      <p class="final-sub">Tu respuesta ya se contó. Bajá para ver los resultados y los debates.</p>
+      <div class="final-stats"><div class="stat"><div class="stat-value" id="finalParticipants">86</div><div class="stat-label">Participantes</div></div><div class="stat"><div class="stat-value" id="finalQuestions">7</div><div class="stat-label">Situaciones</div></div></div>
+      <div class="share-row"><button class="btn btn-primary" id="shareTwitter" aria-label="Compartir en X">𝕏 Compartir</button><button class="btn btn-primary" id="shareWhatsApp" style="background:linear-gradient(135deg,#25d366,#1db954)" aria-label="Compartir en WhatsApp">💬 WhatsApp</button><button class="btn btn-secondary" id="copyLink">🔗 Copiar link</button><button class="btn btn-secondary" onclick="showScreen('screenComments')">Ver debates</button></div>
+      <h3 style="margin-top:1rem;margin-bottom:1rem;font-size:1.1rem;color:var(--muted);font-weight:500">Resultados globales</h3>
+      <div class="comments-grid" id="finalResults" style="max-width:100%;margin:0 auto"></div>
+      <div class="quote-box" style="max-width:700px;margin:2rem auto 0">
+        <p class="quote-text">"No hay nada más desigual que tratar igual a los que son distintos."</p>
+        <p class="quote-author">— <strong>Thomas Jefferson</strong> (ex presidente de EE. UU.)</p>
+        <span class="quote-note">O sea: si a todos les das lo mismo, los que arrancan con menos siguen teniendo menos. La justicia es dar más a quien más lo necesita.</span>
+      </div>
+      <p style="margin-top:2rem;color:var(--muted);font-size:.75rem">Los porcentajes se actualizan solo cada vez que alguien vota.</p>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg><svg class="err" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span id="toastMsg">Listo</span></div>
+
+<script>
+/* ============= 7 SITUACIONES SOBRE REPARTO DE PLATA (12-19 años, tono neutro) ============= */
+const QUESTIONS = [
+  {
+    id:1,
+    text:"Hay personas que ganan millones por mes (streamers, empresarios, famosos). ¿Deberían pagar un impuesto mucho más alto en la parte que pasa de cierta cifra (por ejemplo, 50% de lo que ganan arriba de $100.000 mensuales)?",
+    options:[
+      "Sí, esa plata extra sirve para mejorar hospitales, escuelas y transporte para todos",
+      "Solo si hay control para que esa plata no termine en bolsillos de políticos",
+      "No, ellos la generaron con su trabajo y ya pagan muchos impuestos",
+      "Debería ser aún más alto: nadie necesita millones por mes mientras hay gente sin lo básico"
+    ]
+  },
+  {
+    id:2,
+    text:"¿Estarías de acuerdo en que el Estado entregue una cantidad fija de plata a todas las personas cada mes (un 'ingreso básico'), sin importar si estudian o trabajan? Se financiaría subiendo impuestos a los que más tienen.",
+    options:[
+      "Sí, así nadie pasa necesidades y todos pueden elegir qué estudiar o qué proyecto arrancar",
+      "Solo para quienes no tienen trabajo formal ni ayuda de su familia",
+      "No, la gente dejaría de esforzarse y el país se complicaría más",
+      "Sí, pero a cambio se eliminan todos los otros planes y subsidios que existen hoy"
+    ]
+  },
+  {
+    id:3,
+    text:"En muchas empresas el dueño o director gana 300 veces lo que gana el empleado de menor sueldo. ¿Debería haber una ley que limite esa diferencia a, por ejemplo, 20 veces?",
+    options:[
+      "Sí, 300 veces es demasiado; con 20 veces el dueño sigue ganando fortunas y el de abajo vive digno",
+      "Solo en empresas que reciben dinero del Estado (subsidios, obras públicas)",
+      "No, cada uno negocia su sueldo; si alguien quiere ganar más, que busque otro trabajo",
+      "El límite debería ser 10 veces y valer en todos los países, para que no se escapen"
+    ]
+  },
+  {
+    id:4,
+    text:"Existen países donde los muy ricos guardan su plata para no pagar impuestos en su país de origen (paraísos fiscales). ¿Deberían los demás países dejar de comerciar con ellos hasta que dejen de permitir eso?",
+    options:[
+      "Sí, esa plata falta en los países donde se generó y sirve para escuelas y hospitales",
+      "Solo si antes se les da a esos países otra forma de conseguir inversión",
+      "No, cada país decide sus leyes; no se puede obligar a cambiar",
+      "Deberían desaparecer, pero con una transición de 10 años para que no haya caos"
+    ]
+  },
+  {
+    id:5,
+    text:"Cuando alguien hereda una fortuna muy grande (más de 5 millones de dólares), ¿debería pagar un impuesto altísimo (90%) en la parte que supera ese monto?",
+    options:[
+      "Sí, el mérito no se hereda; todos deberían arrancar con oportunidades parecidas",
+      "Solo el 50%, para no fundir a las empresas familiares que dan trabajo",
+      "No, esa plata ya pagó impuestos cuando se ganó; cobrar de nuevo es injusto",
+      "Debería ser 100%: nadie nace con derecho a millones sin haber trabajado"
+    ]
+  },
+  {
+    id:6,
+    text:"¿Debería estar prohibido que políticos y funcionarios importantes tengan dinero invertido en paraísos fiscales o empresas en el exterior?",
+    options:[
+      "Totalmente, es un conflicto de interés claro: no pueden regular lo que ellos mismos esconden",
+      "Solo si toman decisiones económicas directas (presupuestos, impuestos, contratos)",
+      "No, su patrimonio privado es asunto de ellos, no del Estado",
+      "Deberían mostrar todo públicamente, pero no prohibírselo"
+    ]
+  },
+  {
+    id:7,
+    text:"¿Estás de acuerdo con que los servicios básicos (agua, electricidad, internet, transporte público) sean gratis para todos y se paguen con impuestos a los que más ganan?",
+    options:[
+      "Sí, son derechos básicos, no productos que se compran y venden",
+      "Solo gratis para quienes están bajo la línea de pobreza; el resto paga una tarifa reducida",
+      "No, todo cuesta plata y alguien la tiene que poner; si es gratis se gasta de más",
+      "Gratis sí, pero con un tope de consumo por hogar para que no se derroche"
+    ]
+  }
+];
+
+const STORAGE_KEY = 'wealth_survey_teen_v2';
+const BASE_PARTICIPANTS = 85;
+const MAX_ARG_CHARS = 500;
+const MAX_COMMENT_CHARS = 400;
+
+/* ============= PALABRAS BLOQUEADAS (lista básica) ============= */
+const BAD_WORDS = [
+  'puto','puta','mierda','boludo','boluda','pelotudo','pelotuda','concha','conchetumadre',
+  'culo','pendejo','pendeja','gil','forro','sorete','mogolico','mogolica','retardado','retardada',
+  'negro','negra','maricón','marica','torta','tortillera','zorra','putito','putita',
+  'verga','pija','pito','choto','chota','polla','cipote','chingar','chinga','chingue',
+  'joder','jode','gilipollas','cabrón','cabrona','hijueputa','hijaputa','putamadra','putamadre',
+  'fuck','shit','bitch','asshole','bastard','cunt','dick','pussy','whore','slut','nigger','faggot','retard',
+  'kill','kys','suicide','matate','suicidate','morite','morí','muerte','asesinato','violar','viola','violación',
+  'pedofilo','pedófila','pedofilia','cp','child','porn','porno','xxx','desnudo','desnuda','tetas','tetonas',
+  'culonas','nalgas','pene','vagina','ano','sexo','sexual','erotico','erotica','putear','putearme',
+  'boludeces','boludez','estupido','estupida','imbecil','idiota','tarado','tarada','down','mongolico','mongolica',
+  'discapacitado','discapacitada','minusvalido','minusvalida','enano','enana','gordo','gorda','fea','feo',
+  'insulto','insultar','ofender','ofensa','acoso','acosar','bullying','bully','amenaza','amenazar',
+  'droga','drogas','marihuana','coca','cocaina','heroina','extasis','lsd','fumar','fumete','porro','faso',
+  'alcohol','borracho','borracha','pedo','peda','tomar','tomarse','chupar','chupete','chupala','chupalo'
+];
+function hasBadWord(text){
+  const clean = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  return BAD_WORDS.some(w=>clean.includes(w));
+}
+
+/* ============= FAKE DATA (nombres y comentarios creíbles) ============= */
+const FAKE_NAMES = ["Luli","Mati","Sofi","Juli","Vale","Tomi","Cami","Nico","Martí","Benja","Isa","Santi","Jaz","Lucas","Flor","Agus","Pau","Diego","Reni","Facun","Vicky","Emi","Anto","Gael","Oli","Ivi","Emma","Leo","Mia","Thiago","Alma","Dante","Auri","Ciro","Luna","Elian","Nina","Rocco","Cleo","Ori"];
+const FAKE_AVATARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const FAKE_ARGUMENTS = [
+  "La brecha entre ricos y pobres no es natural, la crean las reglas del juego. Cobrarle más a quien tiene de sobra es devolverle a la sociedad parte de lo que le corresponde.",
+  "El problema no es que existan ricos, es que haya pobres. En vez de castigar al que genera valor, hay que crear oportunidades reales para los que arrancan abajo.",
+  "Los paraísos fiscales son la mayor trampa legal. Si no se hace nada, los países pierden plata para hospitales y escuelas todos los años.",
+  "Una plata mensual para todos no quita ganas de esforzarse, da tranquilidad para estudiar, emprender o cuidar a la familia. En pruebas piloto funcionó.",
+  "La herencia perpetúa la desigualdad. Si nacés en el 1% más rico tenés 50 veces más chances de morir en el 1%. Gravar eso es justicia, no envidia.",
+  "Los directivos ganan 300 veces lo que gana un operario. Nadie trabaja 300 veces más. Un tope obliga a subir los sueldos de abajo o bajar los de arriba.",
+  "Servicios gratis suena bien, pero alguien paga. Si el Estado lo financia con deuda o inflación, al final la pagan los que menos tienen.",
+  "Prohibir que los políticos tengan plata afuera es sentido común. No podés controlar lo que vos mismo escondés. Transparencia total o no deberías estar ahí.",
+  "La diferencia de sueldos no es solo mérito, es poder de negociación. Sindicatos fuertes y topes legales son la única forma de equilibrar un poco.",
+  "No confío en que el Estado gaste bien un impuesto a los muy ricos. Termina en subsidios a amigos del poder. Mejor que el mercado asigne los recursos."
+];
+const FAKE_COMMENTS = [
+  "Totalmente de acuerdo. Que pocos concentren toda la plata frena el consumo y rompe la movilidad social. Hay datos de la OCDE que lo confirman.",
+  "Cuidado con los impuestos muy altos: Francia probó gravar a los súper ricos y se les fueron 60.000 millonarios. La base imponible se achicó.",
+  "El ingreso básico suena bien en teoría, pero ¿de dónde sale la plata real? ¿Impuestos a robots? ¿A transacciones? Necesito números, no frases.",
+  "Los paraísos fiscales existen porque los países grandes los toleran. EEUU (Delaware) y Reino Unido (City of London) son los mayores. Empiecen por casa.",
+  "Herencia al 90% = fin de las pymes familiares. El campo, las fábricas chicas, se venden a fondos buitre para pagar el impuesto. Ojo con lo que piden.",
+  "Director vs empleado: la diferencia no es el sueldo, son las acciones. Un tope en 'sueldo' no toca lo real. Hay que gravar ganancias de capital igual que el trabajo.",
+  "Agua y luz gratis = derroche. En países donde es gratis, el consumo por persona es 3 veces lo recomendado. Tarifa social segmentada es más justo.",
+  "Políticos sin plata afuera: de acuerdo. Pero también exijamos declaración jurada pública, blindaje de bienes y cárcel efectiva por enriquecimiento ilícito.",
+  "La desigualdad se mide con el Gini. Argentina 0.42, Suecia 0.28. La diferencia no es solo 'impuestos', es gasto social de calidad y sindicatos fuertes.",
+  "No todo es plata. El capital social, cultural y educativo se hereda más que el financiero. Impuestos no arreglan que tu papá te consiga la pasantía."
+];
+const FAKE_REPLIES = [
+  "Exacto. El Gini bajó en Latam 2003-2013 por commodities + gasto social, no por impuestos a los ricos.",
+  "Delaware no es paraíso fiscal para no-residentes, EEUU no comparte info (no CRS). Hipocresía pura.",
+  "Las pymes familiares valen menos de $5M. El 90% arranca en $5M, no las toca. Leé la letra chica.",
+  "Las acciones son ingreso diferido. Gravarlas al vender (como en UK) cierra la brecha sin tocar el sueldo nominal.",
+  "Tarifa social segmentada = burocracia, errores de inclusión/exclusión. Gratis universal + impuesto progresivo es más eficiente.",
+  "Blindaje de bienes existe (Ley 25.188). El problema es que no se controla. Falta voluntad política, no leyes.",
+  "Capital cultural: Bourdieu lo explicó en los 70. La escuela reproduce la desigualdad. Impuestos no arreglan eso solo.",
+  "Argentina Gini 0.42 pero el 10% más rico se lleva 35% del ingreso. En Suecia 24%. La diferencia ES redistribución vía impuestos.",
+  "Commodities + gasto social = temporal. Cuando cae el precio de la soja, vuelve la desigualdad. Estructura tributaria permanente es clave.",
+  "Inclusión/exclusión en tarifa social: en Brasil Bolsa Família tiene 98% de acierto. Tecnología + registro único resuelve la burocracia."
+];
+
+function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1])}
+function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function timeAgo(){const h=randInt(1,23);const m=randInt(0,59);return `${h}:${m.toString().padStart(2,'0')}`}
+function generateFakeComments(qId){
+  const comments = [];
+  const baseCount = randInt(8,14);
+  const usedNames = shuffle([...FAKE_NAMES]);
+  const usedArgs = shuffle([...FAKE_ARGUMENTS]);
+  const usedComms = shuffle([...FAKE_COMMENTS]);
+  const usedReplies = shuffle([...FAKE_REPLIES]);
+  for(let i=0;i<baseCount;i++){
+    const hasArg = Math.random()<.6;
+    const c = {id:`fake_${qId}_${i}`,author:usedNames[i],avatar:FAKE_AVATARS[i%26],daysAgo:randInt(0,14),time:timeAgo(),text:usedComms[i%usedComms.length],argument:hasArg?usedArgs[i%usedArgs.length]:null,vote:randInt(0,3),replies:[]};
+    if(Math.random()<.3){const rCount=randInt(1,2);for(let r=0;r<rCount;r++){c.replies.push({id:`fake_${qId}_${i}_r${r}`,author:usedNames[baseCount+r+i*2],avatar:FAKE_AVATARS[(baseCount+r+i*2)%26],daysAgo:c.daysAgo,time:timeAgo(),text:usedReplies[(i+r)%usedReplies.length]})}}
+    comments.push(c);
+  }
+  return comments;
+}
+
+/* ============= PARTICLES ============= */
+const canvas=document.getElementById('particles');const ctx=canvas.getContext('2d');let particles=[];let rafId=null;
+function resizeCanvas(){canvas.width=innerWidth;canvas.height=innerHeight}
+function createParticles(){particles=[];const count=Math.min(60,Math.floor(innerWidth*innerHeight/15000));for(let i=0;i<count;i++){particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5+0.5,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,color:['rgba(0,229,255,','rgba(124,77,255,','rgba(255,45,117,'][Math.floor(Math.random()*3)]+(Math.random()*0.3+0.1)+')',linkDist:120})}}
+function animateParticles(){if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);for(let i=0;i<particles.length;i++){for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x;const dy=particles[i].y-particles[j].y;const dist=Math.sqrt(dx*dx+dy*dy);if(dist<particles[i].linkDist){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(0,229,255,${0.15*(1-dist/particles[i].linkDist)})`;ctx.lineWidth=0.5;ctx.stroke()}}}particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>canvas.width)p.vx*=-1;if(p.y<0||p.y>canvas.height)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill()});rafId=requestAnimationFrame(animateParticles)}
+window.addEventListener('resize',()=>{resizeCanvas();createParticles()});resizeCanvas();createParticles();animateParticles();
+
+/* ============= STATE ============= */
+let currentIndex=0;let answers={};let argumentsText={};let userName='';let hasSubmitted=false;let viewMode='lobby';
+
+/* ============= STORAGE ============= */
+function loadData(){const raw=localStorage.getItem(STORAGE_KEY);if(raw){try{const data=JSON.parse(raw);answers=data.answers||{};argumentsText=data.arguments||{};userName=data.userName||'';hasSubmitted=data.hasSubmitted||false}catch(e){console.warn('Storage corrupto',e)}}if(!localStorage.getItem('fakeComments')){const allFake={};QUESTIONS.forEach(q=>{allFake[q.id]=generateFakeComments(q.id)});localStorage.setItem('fakeComments',JSON.stringify(allFake))}}
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify({answers,arguments:argumentsText,userName,hasSubmitted,timestamp:Date.now()}))}
+function getCompletedCount(){return parseInt(localStorage.getItem('survey_completed_count')||'0',10)}
+function getTotalParticipants(){return BASE_PARTICIPANTS+getCompletedCount()}
+function incrementCompleted(){const c=getCompletedCount();localStorage.setItem('survey_completed_count',String(c+1))}
+function getComments(qId){const raw=localStorage.getItem('userComments');const user=raw?JSON.parse(raw):{};const fake=JSON.parse(localStorage.getItem('fakeComments')||'{}')[qId]||[];const userComments=user[qId]||[];return [...userComments,...fake].sort((a,b)=>b.daysAgo-a.daysAgo||new Date(`1970-01-01T${b.time}`)-new Date(`1970-01-01T${a.time}`))}
+function addUserComment(qId,text,argument=null){if(hasBadWord(text))return false;const raw=localStorage.getItem('userComments');const user=raw?JSON.parse(raw):{};if(!user[qId])user[qId]=[];user[qId].unshift({id:`user_${Date.now()}`,author:userName||'Anónimo',avatar:userName?userName[0].toUpperCase():'?',daysAgo:0,time:new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),text,argument,vote:answers[qId],replies:[],isUser:true});localStorage.setItem('userComments',JSON.stringify(user));return true}
+function addUserReply(qId,commentId,text){if(hasBadWord(text))return false;const raw=localStorage.getItem('userComments');const user=raw?JSON.parse(raw):{};const comments=user[qId]||[];const idx=comments.findIndex(c=>c.id===commentId);if(idx>=0){comments[idx].replies.unshift({id:`reply_${Date.now()}`,author:userName||'Anónimo',avatar:userName?userName[0].toUpperCase():'?',daysAgo:0,time:new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),text,isUser:true});localStorage.setItem('userComments',JSON.stringify(user));return true}return false}
+
+/* ============= DOM ============= */
+const screens={lobby:document.getElementById('screenLobby'),survey:document.getElementById('screenSurvey'),comments:document.getElementById('screenComments'),final:document.getElementById('screenFinal')};
+const nameModal=document.getElementById('nameModal');const userNameInput=document.getElementById('userNameInput');const nameError=document.getElementById('nameError');const nameSubmitBtn=document.getElementById('nameSubmitBtn');
+const form=document.getElementById('surveyForm');const prevBtn=document.getElementById('prevBtn');const nextBtn=document.getElementById('nextBtn');
+const progressFill=document.getElementById('progressFill');const progressText=document.getElementById('progressText');
+const globalCountEl=document.getElementById('globalCount');const finalParticipants=document.getElementById('finalParticipants');const finalQuestions=document.getElementById('finalQuestions');
+const finalResults=document.getElementById('finalResults');const commentsView=document.getElementById('commentsView');
+const toast=document.getElementById('toast');const toastMsg=document.getElementById('toastMsg');
+
+/* ============= UTIL ============= */
+function esc(str){return String(str).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function showToast(msg,type='ok'){toastMsg.textContent=msg;toast.className='toast show '+(type==='ok'?'ok':'err');setTimeout(()=>toast.classList.remove('show'),2500)}
+function showScreen(id){Object.values(screens).forEach(s=>{s.classList.remove('active');s.classList.remove('enter')});const t=document.getElementById(id);t.classList.add('active');requestAnimationFrame(()=>t.classList.add('enter'));viewMode=id.replace('screen','').toLowerCase();if(id==='screenSurvey'){renderSurvey();updateSurveyUI()}if(id==='screenComments'){renderCommentsView()}if(id==='screenFinal'){renderFinal()}window.scrollTo(0,0)}
+function hideNameModal(){nameModal.style.display='none'}
+
+/* ============= NAME MODAL ============= */
+nameSubmitBtn.addEventListener('click',()=>{const name=userNameInput.value.trim();if(!name){nameError.textContent='Por favor poné un nombre';nameError.classList.add('show');userNameInput.focus();return}if(name.length>20){nameError.textContent='Máximo 20 caracteres';nameError.classList.add('show');return}if(hasBadWord(name)){nameError.textContent='Ese nombre no es válido, probá otro';nameError.classList.add('show');return}userName=name;saveData();hideNameModal();showToast(`¡Bienvenid@, ${esc(userName)}!`)});
+userNameInput.addEventListener('keydown',e=>{if(e.key==='Enter')nameSubmitBtn.click()});userNameInput.addEventListener('input',()=>nameError.classList.remove('show'));
+
+/* ============= SURVEY RENDER ============= */
+function renderSurvey(){form.innerHTML='';QUESTIONS.forEach((q,i)=>{const card=document.createElement('div');card.className='question-card'+(i===0?' animate-in':'');card.style.animationDelay=`${i*0.05}s`;card.dataset.qid=q.id;const savedAns=answers[q.id];const savedArg=argumentsText[q.id]||'';const hasAns=savedAns!==undefined;const showArg=hasAns||hasSubmitted;const showComments=hasAns||hasSubmitted;card.innerHTML=`
+  <div class="q-header"><span class="q-num">Situación ${q.id} de ${QUESTIONS.length}</span><h2 class="q-text">${esc(q.text)}</h2></div>
+  <div class="options" role="radiogroup" aria-label="${esc(q.text)}">
+    ${q.options.map((opt,oi)=>`<div class="option"><input type="radio" name="q${q.id}" id="q${q.id}_o${oi}" value="${oi}" ${savedAns===oi?'checked':''} ${hasSubmitted?'disabled':''} aria-label="${esc(opt)}"><label for="q${q.id}_o${oi}"><span class="opt-letter">${String.fromCharCode(65+oi)}</span><span class="opt-text">${esc(opt)}</span></label></div>`).join('')}
+  </div>
+  <div class="argument-box ${showArg?'visible':''}" id="arg_${q.id}" data-qid="${q.id}">
+    <div class="arg-header"><span class="arg-label">Tu argumentación <span class="arg-optional">(opcional)</span></span><span class="arg-counter" id="argCount_${q.id}">${esc(savedArg).length}/${MAX_ARG_CHARS}</span></div>
+    <textarea id="argText_${q.id}" maxlength="${MAX_ARG_CHARS}" placeholder="Explicá por qué elegiste esta opción... (máx. ${MAX_ARG_CHARS} caracteres, no es obligatorio)" ${hasSubmitted?'readonly':''}>${esc(savedArg)}</textarea>
+  </div>
+  <div class="comments-section ${showComments?'visible':''}" id="comments_${q.id}" data-qid="${q.id}">
+    <div class="comments-header"><span class="comments-title">Comentarios y debate</span><span class="vote-count" id="voteCount_${q.id}">${getTotalVotes(q.id)} votos</span></div>
+    <div class="comment-form" id="commentForm_${q.id}" style="${hasSubmitted?'display:none':''}"><textarea id="commentText_${q.id}" maxlength="${MAX_COMMENT_CHARS}" placeholder="Comentá o respondé a alguien... (máx. ${MAX_COMMENT_CHARS} caracteres)"></textarea><button type="button" class="btn btn-primary" onclick="submitComment(${q.id})">Publicar comentario</button></div>
+    <div class="comments-list" id="commentsList_${q.id}"></div>
+  </div>`;form.appendChild(card)});
+QUESTIONS.forEach(q=>{const ta=document.getElementById(`argText_${q.id}`);if(ta){ta.addEventListener('input',()=>{argumentsText[q.id]=ta.value;saveData();updateArgCounter(q.id)})}});
+form.addEventListener('change',e=>{if(e.target.matches('input[type="radio"]')){const qId=parseInt(e.target.name.replace('q',''),10);answers[qId]=parseInt(e.target.value,10);saveData();document.getElementById(`arg_${qId}`).classList.add('visible');document.getElementById(`comments_${qId}`).classList.add('visible');renderCommentsList(qId);updateSurveyUI()}})}
+function updateArgCounter(qId){const ta=document.getElementById(`argText_${qId}`);const counter=document.getElementById(`argCount_${qId}`);if(ta&&counter){const len=ta.value.length;counter.textContent=`${len}/${MAX_ARG_CHARS}`;counter.className='arg-counter'+(len>MAX_ARG_CHARS*0.9?' warn':'')+(len>=MAX_ARG_CHARS?' danger':'')}}
+function getTotalVotes(qId){const completed=getCompletedCount();const userVoted=answers[qId]!==undefined?1:0;return BASE_PARTICIPANTS+completed+userVoted}
+function getPercentage(qId,optIdx){const baseDist={1:[38,22,25,15],2:[31,24,28,17],3:[42,18,22,18],4:[35,20,25,20],5:[28,22,30,20],6:[45,15,20,20],7:[33,27,22,18]};const base=baseDist[qId]||[25,25,25,25];const completed=getCompletedCount();const userVote=answers[qId]===optIdx?1:0;const totalVotes=85+completed+userVote;const votesForOpt=Math.round(base[optIdx]*85/100)+completed*(base[optIdx]/100)+userVote;return Math.round((votesForOpt/totalVotes)*100)}
+function updateSurveyUI(){const pct=((currentIndex+1)/QUESTIONS.length)*100;progressFill.style.transform=`scaleX(${pct/100})`;progressFill.parentElement.setAttribute('aria-valuenow',Math.round(pct));progressText.textContent=`Situación ${currentIndex+1} de ${QUESTIONS.length}`;prevBtn.disabled=currentIndex===0;const q=QUESTIONS[currentIndex];const answered=answers[q.id]!==undefined;if(currentIndex===QUESTIONS.length-1){nextBtn.textContent=hasSubmitted?'Ver resultados':(answered?'Enviar encuesta':'Elegí una opción para continuar');nextBtn.disabled=!answered&&!hasSubmitted}else{nextBtn.textContent='Siguiente →';nextBtn.disabled=false}globalCountEl.textContent=getTotalParticipants()}
+function goTo(idx){if(idx<0||idx>=QUESTIONS.length)return;const currentCard=form.querySelector('.question-card.active');if(currentCard)currentCard.classList.remove('active');currentIndex=idx;requestAnimationFrame(()=>{const newCard=form.querySelector(`.question-card[data-qid="${QUESTIONS[currentIndex].id}"]`);if(newCard)newCard.classList.add('active');updateSurveyUI()})}
+prevBtn.addEventListener('click',()=>goTo(currentIndex-1));
+nextBtn.addEventListener('click',()=>{if(currentIndex===QUESTIONS.length-1){if(!hasSubmitted)submitSurvey();else showScreen('screenFinal')}else goTo(currentIndex+1)});
+function submitSurvey(){const unanswered=QUESTIONS.filter(q=>answers[q.id]===undefined);if(unanswered.length){goTo(QUESTIONS.indexOf(unanswered[0]));showToast('Falta responder la situación '+unanswered[0].id,'err');return}hasSubmitted=true;incrementCompleted();saveData();showToast('¡Encuesta enviada! Gracias por participar');setTimeout(()=>showScreen('screenFinal'),600)}
+
+/* ============= COMMENTS ============= */
+function renderCommentsList(qId){const list=document.getElementById(`commentsList_${qId}`);if(!list)return;const comments=getComments(qId);list.innerHTML=comments.map(c=>renderComment(c,qId)).join('');list.querySelectorAll('.reply-btn').forEach(btn=>{btn.addEventListener('click',()=>{const cid=btn.dataset.cid;const qid=parseInt(btn.dataset.qid,10);const replyText=prompt('Tu respuesta:');if(replyText&&replyText.trim()){if(addUserReply(qid,cid,replyText.trim())){renderCommentsList(qid);showToast('Respuesta publicada')}else{showToast('El mensaje contiene palabras no permitidas','err')}}})})}
+function renderComment(c,qId){const voteLetter=c.vote!==undefined?String.fromCharCode(65+c.vote):'?';const argHtml=c.argument?`<div class="comment-arg"><strong>Tu voto: ${voteLetter}</strong> — ${esc(c.argument)}</div>`:'';const repliesHtml=c.replies.map(r=>`<div class="reply"><div class="reply-head"><div class="reply-avatar">${esc(r.avatar)}</div><div class="reply-meta"><span class="reply-author">${esc(r.author)}${r.isUser?' <span style="color:var(--accent);font-size:.6rem">(vos)</span>':''}</span><span class="reply-time">${r.daysAgo===0?'Hoy':`Hace ${r.daysAgo}d`} • ${r.time}</span></div></div><div class="reply-body">${esc(r.text)}</div></div>`).join('');return `<div class="comment" data-cid="${c.id}"><div class="comment-head"><div class="comment-avatar">${esc(c.avatar)}</div><div class="comment-meta"><span class="comment-author">${esc(c.author)}${c.isUser?' <span style="color:var(--accent);font-size:.65rem">(vos)</span>':''}</span><span class="comment-time">${c.daysAgo===0?'Hoy':`Hace ${c.daysAgo}d`} • ${c.time}</span></div><span class="comment-badge">Voto: ${voteLetter}</span></div><div class="comment-body">${esc(c.text)}</div>${argHtml}<div class="comment-replies">${repliesHtml}</div>${!c.isUser?`<button class="btn btn-ghost reply-btn" style="padding:.3rem .7rem;font-size:.65rem;margin-top:.5rem" data-cid="${c.id}" data-qid="${qId}">Responder</button>`:''}</div>`}
+function submitComment(qId){const ta=document.getElementById(`commentText_${qId}`);const text=ta.value.trim();if(!text){showToast('Escribí algo antes de publicar','err');return}if(text.length>MAX_COMMENT_CHARS){showToast('Máximo '+MAX_COMMENT_CHARS+' caracteres','err');return}const arg=argumentsText[qId]||null;if(addUserComment(qId,text,arg)){ta.value='';renderCommentsList(qId);showToast('Comentario publicado')}else{showToast('El mensaje contiene palabras no permitidas','err')}}
+
+function renderCommentsView(){commentsView.innerHTML=QUESTIONS.map(q=>`<div class="comment-card"><div class="q-num">Situación ${q.id}</div><div class="q-text">${esc(q.text)}</div><div class="comments-list" id="cv_${q.id}" style="max-height:400px"></div><div style="margin-top:1rem;text-align:center"><button class="btn btn-secondary" onclick="scrollToQuestion(${q.id})">Ver en encuesta</button></div></div>`).join('');QUESTIONS.forEach(q=>{renderCommentsListView(q.id)})}
+function renderCommentsListView(qId){const list=document.getElementById(`cv_${qId}`);if(!list)return;const comments=getComments(qId);list.innerHTML=comments.map(c=>renderComment(c,qId)).join('');list.querySelectorAll('.reply-btn').forEach(btn=>{btn.addEventListener('click',()=>{const cid=btn.dataset.cid;const qid=parseInt(btn.dataset.qid,10);const replyText=prompt('Tu respuesta:');if(replyText&&replyText.trim()){if(addUserReply(qid,cid,replyText.trim())){renderCommentsListView(qid);showToast('Respuesta publicada')}else{showToast('El mensaje contiene palabras no permitidas','err')}}})})}
+function scrollToQuestion(qId){showScreen('screenSurvey');const idx=QUESTIONS.findIndex(q=>q.id===qId);if(idx>=0)goTo(idx)}
+
+/* ============= FINAL RESULTS ============= */
+function renderFinal(){finalParticipants.textContent=getTotalParticipants();finalQuestions.textContent=QUESTIONS.length;globalCountEl.textContent=getTotalParticipants();finalResults.innerHTML=QUESTIONS.map(q=>{const myAns=answers[q.id];const myArg=argumentsText[q.id]||'';return `<div class="comment-card"><div class="q-num">Situación ${q.id}</div><div class="q-text">${esc(q.text)}</div><div class="result-bars">${q.options.map((opt,i)=>`<div class="res-bar"><span class="res-label">${String.fromCharCode(65+i)}) ${esc(opt).slice(0,45)}${opt.length>45?'…':''}</span><div class="res-track"><div class="res-fill" style="width:${getPercentage(q.id,i)}%"></div></div><span class="res-pct">${getPercentage(q.id,i)}%</span></div>`).join('')}</div>${myAns!==undefined?`<div class="my-answer"><strong>Tu voto: ${String.fromCharCode(65+myAns)}</strong>${myArg?' — '+esc(myArg):''}</div>`:''}</div>`}).join('')}
+
+/* ============= SHARE ============= */
+function getShareUrl(){return window.location.href}
+function getShareText(){return `Completé la encuesta "¿Cómo se reparte la plata?". ${getTotalParticipants()} personas ya participaron. ¿Vos qué pensás?`}
+document.getElementById('shareTwitter').addEventListener('click',()=>{window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getShareText())}&url=${encodeURIComponent(getShareUrl())}`,'_blank','width=550,height=420')});
+document.getElementById('shareWhatsApp').addEventListener('click',()=>{window.open(`https://wa.me/?text=${encodeURIComponent(getShareText()+' '+getShareUrl())}`,'_blank')});
+document.getElementById('copyLink').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(getShareUrl());showToast('Link copiado')}catch(e){showToast('No se pudo copiar','err')}});
+
+/* ============= INIT ============= */
+loadData();renderCommentsView();if(hasSubmitted){showScreen('screenFinal')}else{showScreen('screenLobby')}
+</script>
+</body>
+</html>
